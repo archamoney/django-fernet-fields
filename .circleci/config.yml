@@ -27,7 +27,11 @@ jobs:
               libbz2-dev libreadline-dev libsqlite3-dev curl \
               libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
             pyenv install 3.8.10
-            pyenv global 3.8.10
+            pyenv install 3.9.19
+            pyenv install 3.10.6
+            pyenv install 3.11.3
+            pyenv install 3.12.1
+            pyenv global 3.8.10 3.9.19 3.10.6 3.11.3 3.12.1
             pip install --upgrade pip
             pip install tox
             tox
