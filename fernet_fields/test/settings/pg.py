@@ -11,6 +11,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         # matches travis config
+        'HOST': 'localhost',
         'NAME': 'djftest',
         'TEST': {
             'NAME': 'djftest',
