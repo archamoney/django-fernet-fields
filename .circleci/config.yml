@@ -9,8 +9,8 @@ jobs:
       - image: cimg/postgres:14.12
         environment:
           POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
           POSTGRES_DB: djftest
-          POSTGRES_HOST_AUTH_METHOD: trust
     steps:
       - checkout
 
