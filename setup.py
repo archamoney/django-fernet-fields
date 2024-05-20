@@ -38,5 +38,7 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Framework :: Django',
     ],
+    # Only support Python versions in testing matrix
+    python_requires='>=3.8,<3.13',
     zip_safe=False,
 )
