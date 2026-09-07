@@ -3,7 +3,8 @@ from setuptools import setup, find_packages
 
 
 long_description = (
-    open('README.rst').read() + open('CHANGES.rst').read())
+    open('README.rst', encoding='utf-8').read()
+    + open('CHANGES.rst', encoding='utf-8').read())
 
 
 def get_version():
