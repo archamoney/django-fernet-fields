@@ -4,6 +4,8 @@ CHANGES
 master (unreleased)
 -------------------
 
+* Add support for Django 5.1 and 6.0, and Python 3.13.
+
 0.6 (2019.05.10)
 ----------------
 

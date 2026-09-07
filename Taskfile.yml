@@ -1,0 +1,71 @@
+# go-task tasks: https://taskfile.dev
+# `task test` runs the whole tox matrix in Docker against a throwaway postgres,
+# the same matrix .github/workflows/test.yml runs on CI.
+version: '3'
+
+env:
+  COMPOSE_PROJECT_NAME: django-fernet-fields
+
+vars:
+  COMPOSE: docker compose
+
+tasks:
+  default:
+    desc: Run the test suite (alias for `task test`)
+    cmds:
+      - task: test
+
+  test:
+    desc: >-
+      Run the tox matrix in Docker. Extra args go to tox,
+      e.g. `task test -- -e py312-django60-pg`, `task test -- -p auto`.
+    cmds:
+      - defer: { task: stop }
+      - "{{.COMPOSE}} run --rm --build tests tox {{.CLI_ARGS}}"
+
+  test:django6:
+    desc: Run only the Django 6 environments
+    cmds:
+      - task: test
+        vars: { CLI_ARGS: '-e py312-django60-pg,py312-django60-sqlite,py313-django60-pg,py313-django60-sqlite' }
+
+  coverage:
+    desc: Run the matrix and write an HTML coverage report to htmlcov/ (like `make test`)
+    cmds:
+      - defer: { task: stop }
+      - >-
+        {{.COMPOSE}} run --rm --build tests
+        bash -c 'coverage erase && tox {{.CLI_ARGS}} && coverage html'
+
+  lint:
+    desc: Run flake8 in Docker
+    cmds:
+      - task: test
+        vars: { CLI_ARGS: '-e py39-flake8' }
+
+  docs:
+    desc: Build the Sphinx docs in Docker
+    cmds:
+      - task: test
+        vars: { CLI_ARGS: '-e py39-docs' }
+
+  build:
+    desc: Build the test runner image
+    cmds:
+      - "{{.COMPOSE}} build tests"
+
+  shell:
+    desc: Open a shell in the test container (postgres running alongside)
+    cmds:
+      - defer: { task: stop }
+      - "{{.COMPOSE}} run --rm --build tests bash"
+
+  stop:
+    desc: Stop and remove the containers, keeping the tox/pip caches
+    cmds:
+      - "{{.COMPOSE}} down --remove-orphans"
+
+  clean:
+    desc: Remove containers, cache volumes and the locally built image
+    cmds:
+      - "{{.COMPOSE}} down --remove-orphans --volumes --rmi local"

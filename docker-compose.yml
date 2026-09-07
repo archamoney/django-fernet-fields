@@ -1,0 +1,48 @@
+# Local, isolated equivalent of the `tox` job in .github/workflows/test.yml.
+# On GitHub Actions the postgres service container is published on the runner's
+# localhost:5432 -- which is exactly what fernet_fields/test/settings/pg.py
+# expects. `network_mode: service:db` reproduces that here: the test container
+# shares the database's network namespace, so no test settings need to change.
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      # pg.py connects without a password, as it does on CI.
+      POSTGRES_HOST_AUTH_METHOD: trust
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
+    # The database is throwaway: keeping it in RAM makes startup quicker and
+    # means a major-version bump of the image can never hit stale data files.
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  tests:
+    build:
+      context: .
+      dockerfile: docker/tests.Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    network_mode: "service:db"
+    working_dir: /app
+    environment:
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
+    volumes:
+      - .:/app
+      # Keep the virtualenvs and wheel cache in volumes: reruns are fast and
+      # the host checkout stays clean.
+      - toxenvs:/app/.tox
+      - pipcache:/root/.cache/pip
+    command: ["tox"]
+
+volumes:
+  toxenvs:
+  pipcache:

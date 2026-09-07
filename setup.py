@@ -23,7 +23,7 @@ setup(
     author_email='orcastech@orcasinc.com',
     url='https://github.com/orcasgit/django-fernet-fields/',
     packages=find_packages(),
-    install_requires=['Django>=1.11,<=6', 'cryptography>=0.9'],
+    install_requires=['Django>=1.11,<7', 'cryptography>=0.9'],
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
@@ -35,10 +35,11 @@ setup(
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         'Programming Language :: Python :: Implementation :: CPython',
         'Framework :: Django',
     ],
     # Only support Python versions in testing matrix
-    python_requires='>=3.8,<3.13',
+    python_requires='>=3.8,<3.14',
     zip_safe=False,
 )
