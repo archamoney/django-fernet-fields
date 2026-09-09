@@ -1,0 +1,13 @@
+# The image copies no source (the checkout is bind-mounted at run time), so
+# keeping the build context small just makes builds faster.
+.git
+.idea
+.tox
+htmlcov
+dist
+doc/_build
+*.egg-info
+**/__pycache__
+*.pyc
+.coverage
+fernet_fields/test/settings/testdb.sqlite

@@ -43,7 +43,26 @@ Please add tests for any changes you submit. The tests should fail before your
 code changes, and pass with your changes. Existing tests should not
 break. Coverage (see below) should remain at 100% following a full tox run.
 
-To install all the requirements for running the tests::
+The quickest way to run the full matrix is in Docker, which needs nothing on
+your machine but Docker and `go-task`_::
+
+    task test
+
+That builds an image containing every interpreter in the tox matrix, starts a
+throwaway PostgreSQL container, and runs ``tox`` against it -- the same thing
+CI does. Anything after ``--`` is passed straight to tox::
+
+    task test -- -e py312-django60-pg      # a single environment
+    task lint                              # flake8 only
+    task docs                              # build the docs
+    task clean                             # drop the cached image and volumes
+
+Run ``task --list`` to see everything available.
+
+.. _go-task: https://taskfile.dev
+
+To run the tests directly on your machine instead, install all the requirements
+for running the tests::
 
     pip install -r requirements.txt
 
@@ -60,8 +79,8 @@ versions) and generate a coverage report in the ``htmlcov/`` directory::
 
     make test
 
-This requires that you have ``python2.7``, ``python3.3``, ``python3.4``,
-``pypy``, and ``pypy3`` binaries on your system's shell path.
+This requires that you have ``python3.8`` through ``python3.13`` binaries on
+your system's shell path (or use ``task test``, which provides them for you).
 
 To install PostgreSQL on Debian-based systems::
 
